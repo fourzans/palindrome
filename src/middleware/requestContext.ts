@@ -1,16 +1,23 @@
-import { NextFunction, Request, Response } from 'express';
+import { RequestHandler } from 'express';
 import pinoHttp from 'pino-http';
-import { logger } from '../logging/logger';
 import { randomUUID } from 'crypto';
+import { logger } from '../logging/logger';
 
-export const requestContext = pinoHttp({
+export const requestContext: RequestHandler = pinoHttp({
   logger,
-  genReqId: (req) => req.headers['x-request-id']?.toString() || randomUUID(),
-  autoLogging: { ignore: (req) => req.url === '/health/live' },
-  customProps: (req) => {
-    const corr = (req.headers['x-correlation-id'] || req.headers['x-request-id'])?.toString();
-    return { correlationId: corr };
+  genReqId: (req) => {
+    const existing = req.headers['x-request-id'];
+    return typeof existing === 'string' ? existing : randomUUID();
   },
+  autoLogging: { ignore: (req) => req.url === '/health/live' },
+  customProps: (req) => ({
+    correlationId:
+      typeof req.headers['x-correlation-id'] === 'string'
+        ? req.headers['x-correlation-id']
+        : typeof req.headers['x-request-id'] === 'string'
+          ? req.headers['x-request-id']
+          : ''
+  }),
   customLogLevel: (_req, res, err) => {
     if (err) return 'error';
     if (res.statusCode >= 500) return 'error';
@@ -18,18 +25,3 @@ export const requestContext = pinoHttp({
     return 'info';
   }
 });
-
-export function idAndTiming(req: Request, res: Response, next: NextFunction) {
-  const requestId = (req as any).id || req.headers['x-request-id'] || randomUUID();
-  res.setHeader('X-Request-Id', String(requestId));
-  const corr = req.headers['x-correlation-id'] || requestId;
-  res.setHeader('X-Correlation-Id', String(corr));
-
-  const start = process.hrtime.bigint();
-  res.on('finish', () => {
-    const durMs = Number((process.hrtime.bigint() - start) / 1_000_000n);
-    (req as any).log?.info({ durMs }, 'request complete');
-  });
-
-  next();
-}

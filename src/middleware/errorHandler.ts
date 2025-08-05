@@ -1,14 +1,34 @@
-import { Request, Response, NextFunction } from 'express';
+import type { ErrorRequestHandler } from 'express';
 import { ZodError } from 'zod';
 
-export default function errorHandler(err: unknown, req: Request, res: Response, _next: NextFunction) {
-    const rid = (req as any).id;
-
-    if (err instanceof ZodError) {
-        (req as any).log?.warn({ err, rid }, 'validation error');
-        return res.status(400).json({ error: err.errors.map(e => e.message)});
-    }
-
-    (req as any).log?.error({ err, rid }, 'unhandled error');
-    res.status(500).json({ error: 'Internal Server Error'}); 
+function hasStatus(e: unknown): e is { status: number } {
+  return (
+    typeof e === 'object' &&
+    e !== null &&
+    'status' in e &&
+    typeof (e as { status: unknown }).status === 'number'
+  );
 }
+
+const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
+  const requestId = req.id;
+
+  if (err instanceof ZodError) {
+    req.log?.warn({ err, requestId }, 'validation error');
+    return res.status(400).json({
+      error: 'Bad Request',
+      details: err.errors,
+      requestId
+    });
+  }
+
+  if (err instanceof SyntaxError && hasStatus(err) && err.status === 400) {
+    req.log?.warn({ err, requestId }, 'malformed JSON');
+    return res.status(400).json({ error: 'Malformed JSON', requestId });
+  }
+
+  req.log?.error({ err, requestId }, 'unhandled error');
+  return res.status(500).json({ error: 'Internal Server Error', requestId });
+};
+
+export default errorHandler;

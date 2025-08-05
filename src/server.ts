@@ -18,4 +18,4 @@ const shutdown = (signal: string) => {
   setTimeout(() => process.exit(1), 10000).unref();
 };
 
-['SIGINT', 'SIGTERM'].forEach(sig => process.on(sig, () => shutdown(sig)));
+['SIGINT', 'SIGTERM'].forEach((sig) => process.on(sig, () => shutdown(sig)));

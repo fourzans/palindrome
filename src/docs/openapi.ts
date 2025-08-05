@@ -1,4 +1,8 @@
-import { OpenAPIRegistry, OpenApiGeneratorV3, extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
+import {
+  OpenAPIRegistry,
+  OpenApiGeneratorV3,
+  extendZodWithOpenApi
+} from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
 extendZodWithOpenApi(z);
@@ -8,7 +12,10 @@ export const registry = new OpenAPIRegistry();
 // Schemas
 export const PolyQuerySchema = z.object({
   q: z.string().min(1).max(2048).openapi({ description: 'String to check' }),
-  strict: z.boolean().default(false).openapi({ description: 'Strict mode (do not strip non-alphanumerics)' })
+  strict: z
+    .boolean()
+    .default(false)
+    .openapi({ description: 'Strict mode (do not strip non-alphanumerics)' })
 });
 
 export const PolyResponseSchema = z.object({

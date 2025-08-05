@@ -1,0 +1,42 @@
+# Node dependencies
+node_modules
+
+# Build output
+dist
+build
+
+# Logs
+*.log
+logs
+
+# Environment files
+.env
+.env.*
+.env.local
+
+# Coverage
+coverage
+.nyc_output
+test-results
+
+# TypeScript cache
+*.tsbuildinfo
+
+# IDE settings
+.vscode
+.idea
+*.swp
+
+# Git
+.git
+.gitignore
+
+# Docker
+docker-compose.override.yml
+*.local
+
+# GitHub Actions workflows (to avoid YAML parse errors)
+.github/workflows/*.yml
+.github/workflows/*.yaml
+
+# Public/OpenAPI schema files (if gen

@@ -30,6 +30,7 @@ npm install
 ```
 
 ### 2. Set up environment variables
+
 ```bash
 cp .env.example .env
 ```
@@ -43,11 +44,15 @@ FF_POLYANDROME_ENABLED=true
 ```
 
 ## 🔧 Run the app
+
 ### Development (with watch mode)
+
 ```bash
 npm run dev
 ```
+
 ### Build and start
+
 ```bash
 npm run build
 npm start
@@ -56,12 +61,15 @@ npm start
 ## 🐳 Docker
 
 Run the service in Docker:
+
 ```bash
 docker-compose up --build
 ```
+
 Make sure to update .env if needed before starting.
 
 ## 🔍 Example Usage
+
 ```bash
 curl "http://localhost:3000/polyandrome?q=Never%20odd%20or%20even"
 ```
@@ -75,6 +83,7 @@ curl "http://localhost:3000/polyandrome?q=Never%20odd%20or%20even"
 ```
 
 ## 📬 Endpoints
+
 | Method | Path                 | Description      |
 | ------ | -------------------- | ---------------- |
 | GET    | `/polyandrome?q=...` | Palindrome check |
@@ -82,13 +91,14 @@ curl "http://localhost:3000/polyandrome?q=Never%20odd%20or%20even"
 | GET    | `/openapi.json`      | OpenAPI 3.0 JSON |
 | GET    | `/health/live`       | Liveness probe   |
 
-
 ## 🧪 Run Tests
+
 ```bash
 npn run test
 ```
 
 🗂 Project Structure
+
 ```bash
 src/
 ├── app.ts                # Express app
@@ -103,6 +113,7 @@ test/                     # Vitest test files
 ```
 
 ## 🤖 GitHub Actions CI
+
 CI pipeline: .github/workflows/ci.yml
 
 It does the following on push and pull request:
@@ -114,8 +125,7 @@ It does the following on push and pull request:
 - 🐳 Optionally build Docker image
 
 ## 📄 License
+
 MIT © Mariano Nicolas Fourzans
 
 See [LICENSE](./LICENSE)
-
-
