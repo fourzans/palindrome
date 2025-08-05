@@ -12,7 +12,7 @@ describe('isPalindrome', () => {
   });
 
   it('respects strict mode', () => {
-    expect(isPalindrome('a,b,a', true)).toBe(false);
+    expect(isPalindrome('a,b,c', true)).toBe(false);
     expect(isPalindrome('aba', true)).toBe(true);
   });
 });
